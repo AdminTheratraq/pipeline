@@ -1,0 +1,82 @@
+{
+    "dataRoles": [
+        {
+            "displayName": "Company",
+            "name": "Company",
+            "kind": "Grouping"
+        },
+        {
+            "displayName": "Phase",
+            "name": "Phase",
+            "kind": "Grouping"
+        },
+        {
+            "displayName": "MoA",
+            "name": "MoA",
+            "kind": "Grouping"
+        },
+        {
+            "displayName": "ProductName",
+            "name": "ProductName",
+            "kind": "Grouping"
+        }
+    ],
+    "dataViewMappings": [
+        {
+            "table": {
+                "rows": {
+                    "select": [
+                        {
+                            "for": {
+                                "in": "Company"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "Phase"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "MoA"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "ProductName"
+                            }
+                        }
+                    ]
+                },
+                "columns": {
+                    "select": [
+                        {
+                            "for": {
+                                "in": "Company"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "Phase"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "MoA"
+                            }
+                        },
+                        {
+                            "for": {
+                                "in": "ProductName"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "sorting": {
+        "default": {}
+    },
+    "suppressDefaultTitle": true
+}
