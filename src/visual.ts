@@ -41,7 +41,6 @@ import IVisualEventService = powerbi.extensibility.IVisualEventService;
 import * as d3 from 'd3';
 import { VisualSettings } from "./settings";
 
-/*Row Item */
 export interface Pipeline {
     Company: String;
     Phase: string;
@@ -49,14 +48,13 @@ export interface Pipeline {
     ProductName: string;
 }
 
-/*projects by group*/
 export interface Pipelines {
     SalesForce: Pipeline[];
 }
 
 export function logExceptions(): MethodDecorator {
-    return function (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>)
-        : TypedPropertyDescriptor<any> {
+    return (target: Object, propertyKey: string, descriptor: TypedPropertyDescriptor<any>)
+        : TypedPropertyDescriptor<any> => {
 
         return {
             value: function () {
@@ -94,6 +92,7 @@ export class Visual implements IVisual {
     private events: IVisualEventService;
 
     constructor(options: VisualConstructorOptions) {
+        debugger;
         console.log('Visual Constructor', options);
         this.target = d3.select(options.element).append('div');
         this.host = options.host;
@@ -113,7 +112,7 @@ export class Visual implements IVisual {
         let gHeight = options.viewport.height - this.margin.top - this.margin.bottom;
         let gWidth = options.viewport.width - this.margin.left - this.margin.right;
 
-        let funnelData = Visual.converter(options.dataViews[0], this.host);
+        let funnelData = Visual.CONVERTER(options.dataViews[0], this.host);
         let phaseData = ['Phase I', 'Phase II', 'Phase III', 'Filed', 'Approved'];
         let companyData = phaseData.map(d => {
             return {
@@ -145,6 +144,12 @@ export class Visual implements IVisual {
             };
         });
 
+        this.renderPipeline(options, maxLength, phaseData, companyData, moAColorData);
+
+        this.events.renderingFinished(options);
+    }
+
+    private renderPipeline(options, maxLength, phaseData, companyData, moAColorData) {
         let mainContent = this.target.append('div')
             .attr('class', 'main-content');
 
@@ -164,17 +169,17 @@ export class Visual implements IVisual {
             .data(phaseData)
             .enter()
             .append('li')
-            .attr('class', function (d, i) {
+            .attr('class', (d, i) => {
                 return 'funnel-step-' + i;
             })
-            .attr('style', function (d) {
+            .attr('style', (d) => {
                 return 'height:' + unit + 'px;';
             });
 
         let span = li.append('span')
             .attr('style', 'border-top-width:' + unit + 'px');
 
-        li.append('p').append('span').text(function (d) {
+        li.append('p').append('span').text((d: any) => {
             return d;
         });
 
@@ -182,7 +187,7 @@ export class Visual implements IVisual {
             .attr('style', 'top:' + (-unit) + 'px');
 
         let companyLi = companyUl.selectAll('.li')
-            .data(function (d) {
+            .data((d) => {
                 let [companies] = companyData.filter(c => c.Phase === d);
                 return companies.Companies;
             })
@@ -191,7 +196,7 @@ export class Visual implements IVisual {
 
         companyLi.append('div')
             .attr('class', 'icon-DrugIcon')
-            .attr('style', function (c) {
+            .attr('style', (c: any) => {
                 let [moAcolor] = moAColorData.filter(d => d.moA === c.moA);
                 return 'color:' + moAcolor.color + ';';
             });
@@ -201,18 +206,18 @@ export class Visual implements IVisual {
 
         companyDetails.append('p')
             .attr('class', 'product-name')
-            .attr('title', function (c) {
+            .attr('title', (c: any) => {
                 return c.productName;
             })
-            .text(function (c) {
+            .text((c: any) => {
                 return c.productName;
             });
 
         companyDetails.append('p')
-            .attr('title', function (c) {
+            .attr('title', (c: any) => {
                 return c.company;
             })
-            .text(function (c) {
+            .text((c: any) => {
                 return c.company;
             });
 
@@ -228,20 +233,19 @@ export class Visual implements IVisual {
 
         legendLi.append('div')
             .attr('class', 'icon-DrugIcon')
-            .attr('style', function (d) {
+            .attr('style', (d: any) => {
                 return 'color:' + d.color + ';';
             });
 
         legendLi.append('div')
-            .text(function (d) {
+            .text((d: any) => {
                 return d.moA;
             });
 
-        this.events.renderingFinished(options);
     }
 
-    /* converter to table data */
-    public static converter(dataView: DataView, host: IVisualHost): Pipeline[] {
+    // converter to table data
+    public static CONVERTER(dataView: DataView, host: IVisualHost): Pipeline[] {
         let resultData: Pipeline[] = [];
         let tableView = dataView.table;
         let _rows = tableView.rows;
@@ -272,7 +276,7 @@ export class Visual implements IVisual {
     }
 
     private static parseSettings(dataView: DataView): VisualSettings {
-        return VisualSettings.parse(dataView) as VisualSettings;
+        return <VisualSettings>VisualSettings.parse(dataView);
     }
 
     /**
